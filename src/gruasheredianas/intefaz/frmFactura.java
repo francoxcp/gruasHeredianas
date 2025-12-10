@@ -1,4 +1,3 @@
-
 package gruasheredianas.intefaz;
 
 import gruasheredianas.camiones.model.Factura;
@@ -12,8 +11,6 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import java.io.FileOutputStream;
 
-
-
 public class frmFactura extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frmFactura.class.getName());
@@ -23,6 +20,34 @@ public class frmFactura extends javax.swing.JFrame {
         initComponents();
     }
 
+    // Validaciones antes de guardar o imprimir
+    private boolean validarCampos() {
+        if (txtNombre.getText().trim().isEmpty() ||
+            txtCedula.getText().trim().isEmpty() ||
+            txtTelefono.getText().trim().isEmpty() ||
+            txtKm.getText().trim().isEmpty() ||
+            txtTarifa.getText().trim().isEmpty() ||
+            txtOtroCargo.getText().trim().isEmpty()) {
+
+            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios, excepto observaciones.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
+            return false;
+        } 
+    // Validación de tipos numéricos
+        try {
+            Double.parseDouble(txtKm.getText().trim());
+            Double.parseDouble(txtTarifa.getText().trim());
+            Double.parseDouble(txtOtroCargo.getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Ingrese solo valores numéricos para kilómetros, tarifa y otros cargos.", "Error de formato", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        // Validar número de teléfono (ejemplo simple, puedes mejorar)
+        if (!txtTelefono.getText().trim().matches("\\d{7,15}")) {
+            JOptionPane.showMessageDialog(this, "Ingrese un número de teléfono válido (7-15 dígitos).", "Teléfono inválido", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
   
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -358,7 +383,8 @@ public class frmFactura extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCedulaActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        guardarFactura();
+        if (validarCampos())
+            guardarFactura();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
@@ -392,11 +418,6 @@ public class frmFactura extends javax.swing.JFrame {
 
    
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -407,10 +428,22 @@ public class frmFactura extends javax.swing.JFrame {
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new frmFactura().setVisible(true));
+    }
+
+    // Modificado: método para crear Factura desde los datos del form (solo si los datos están validados)
+    private Factura armarFacturaDesdeFormulario() {
+        Factura f = new Factura();
+        f.setNombreCliente(txtNombre.getText().trim());
+        f.setCedula(txtCedula.getText().trim());
+        f.setTelefono(txtTelefono.getText().trim());
+        f.setKilometrosRecorridos(Double.parseDouble(txtKm.getText().trim()));
+        f.setTarifaPorKm(Double.parseDouble(txtTarifa.getText().trim()));
+        f.setOtrosCargos(Double.parseDouble(txtOtroCargo.getText().trim()));
+        f.setObservaciones(txtObservaciones.getText().trim());
+        f.setFecha(new Date());
+        f.calcularMontos();
+        return f;
     }
     
 private void guardarFactura() {
@@ -476,57 +509,53 @@ private void guardarFactura() {
 
 private void imprimirFacturaPDF(Factura f) {
     try {
-        String carpeta = "C:\\Users\\yarim\\OneDrive\\Documentos\\Facturas\\";
-        String archivo = carpeta + "Factura_" + f.getCedula() + "_" + System.currentTimeMillis() + ".pdf";
+        String carpeta = "C:\\Users\\franc\\OneDrive\\Documentos\\Facturas\\";
+            String archivo = carpeta + "Factura_" + f.getCedula() + "_" + System.currentTimeMillis() + ".pdf";
 
-        Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(archivo));
-        document.open();
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(archivo));
+            document.open();
 
-        // Título
-        Font titulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
-        Paragraph p = new Paragraph("FACTURA DE SERVICIO", titulo);
-        p.setAlignment(Element.ALIGN_CENTER);
-        document.add(p);
-        document.add(new Paragraph(" ")); // línea en blanco
+            Font titulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
+            Paragraph p = new Paragraph("FACTURA DE SERVICIO", titulo);
+            p.setAlignment(Element.ALIGN_CENTER);
+            document.add(p);
+            document.add(new Paragraph(" "));
 
-        // Datos del cliente
-        document.add(new Paragraph("Cliente: " + f.getNombreCliente()));
-        document.add(new Paragraph("Cédula: " + f.getCedula()));
-        document.add(new Paragraph("Teléfono: " + f.getTelefono()));
-        document.add(new Paragraph("Fecha: " + f.getFecha()));
-        document.add(new Paragraph(" "));
+            document.add(new Paragraph("Cliente: " + f.getNombreCliente()));
+            document.add(new Paragraph("Cédula: " + f.getCedula()));
+            document.add(new Paragraph("Teléfono: " + f.getTelefono()));
+            document.add(new Paragraph("Fecha: " + f.getFecha()));
+            document.add(new Paragraph(" "));
 
-        // Datos de la factura
-        PdfPTable tabla = new PdfPTable(2); // 2 columnas
-        tabla.setWidthPercentage(100);
-        tabla.addCell("Kilómetros recorridos");
-        tabla.addCell(String.valueOf(f.getKilometrosRecorridos()));
-        tabla.addCell("Tarifa por km");
-        tabla.addCell(String.valueOf(f.getTarifaPorKm()));
-        tabla.addCell("Otros cargos");
-        tabla.addCell(String.valueOf(f.getOtrosCargos()));
-        tabla.addCell("Subtotal");
-        tabla.addCell(String.valueOf(f.getSubtotal()));
-        tabla.addCell("IVA");
-        tabla.addCell(String.valueOf(f.getIva()));
-        tabla.addCell("Total");
-        tabla.addCell(String.valueOf(f.getTotal()));
+            PdfPTable tabla = new PdfPTable(2);
+            tabla.setWidthPercentage(100);
+            tabla.addCell("Kilómetros recorridos");
+            tabla.addCell(String.valueOf(f.getKilometrosRecorridos()));
+            tabla.addCell("Tarifa por km");
+            tabla.addCell(String.valueOf(f.getTarifaPorKm()));
+            tabla.addCell("Otros cargos");
+            tabla.addCell(String.valueOf(f.getOtrosCargos()));
+            tabla.addCell("Subtotal");
+            tabla.addCell(String.format("%.2f", f.getSubtotal()));
+            tabla.addCell("IVA");
+            tabla.addCell(String.format("%.2f", f.getIva()));
+            tabla.addCell("Total");
+            tabla.addCell(String.format("%.2f", f.getTotal()));
 
-        document.add(tabla);
-        document.add(new Paragraph(" "));
+            document.add(tabla);
+            document.add(new Paragraph(" "));
 
-        // Observaciones
-        document.add(new Paragraph("Observaciones: " + f.getObservaciones()));
+            document.add(new Paragraph("Observaciones: " + f.getObservaciones()));
 
-        document.close();
+            document.close();
 
-        JOptionPane.showMessageDialog(this, "PDF generado correctamente: " + archivo);
+            JOptionPane.showMessageDialog(this, "PDF generado correctamente: " + archivo);
 
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error al generar PDF: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
+        } catch (Exception e) {
+            logger.severe("Error al generar PDF: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al generar PDF: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 }
     
     private void limpiarDatos(){
