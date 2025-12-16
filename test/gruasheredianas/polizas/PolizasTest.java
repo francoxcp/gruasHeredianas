@@ -84,7 +84,7 @@ public class PolizasTest {
         boolean porVencer = poliza.estaPorVencer();
         
         // Debe estar por vencer (dentro de 30 días)
-        assert porVencer == true;
+        assert porVencer;
         
         System.out.println("✓ Verificación de póliza por vencer correcta");
         System.out.println("  Días restantes: " + poliza.getDiasHastaVencimiento());
@@ -105,7 +105,7 @@ public class PolizasTest {
         
         boolean vencida = poliza.estaVencida();
         
-        assert vencida == true;
+        assert vencida;
         
         System.out.println("✓ Verificación de póliza vencida correcta");
         System.out.println("  Días desde vencimiento: " + Math.abs(poliza.getDiasHastaVencimiento()));
@@ -145,8 +145,8 @@ public class PolizasTest {
         boolean vencida = poliza.estaVencida();
         boolean porVencer = poliza.estaPorVencer();
         
-        assert vencida == false;
-        assert porVencer == false;
+        assert !vencida;
+        assert !porVencer;
         
         System.out.println("✓ Verificación de póliza vigente correcta");
         System.out.println("  Días restantes: " + poliza.getDiasHastaVencimiento());
