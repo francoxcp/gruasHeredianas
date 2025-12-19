@@ -218,6 +218,8 @@ public class RendimientoTest {
         // Assert
         assertTrue(polizasProximas.size() > 0,
             "Debe haber pólizas próximas a vencer");
+        assertEquals(polizasProximasEsperadas, polizasProximas.size(),
+            "Debe haber exactamente " + polizasProximasEsperadas + " pólizas próximas a vencer");
         assertTrue(duration < 1000,
             "La búsqueda debe completarse en menos de 1 segundo. Tiempo real: " + duration + "ms");
         
