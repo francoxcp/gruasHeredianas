@@ -30,9 +30,14 @@ public class frmMenuFactura extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("jButton2");
+        jButton2.setText("Borrar factura");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("jButton3");
+        jButton3.setText("Editar factura");
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -49,11 +54,11 @@ public class frmMenuFactura extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(38, 38, 38)
                 .addComponent(btnGenerar)
-                .addGap(46, 46, 46)
-                .addComponent(jButton2)
-                .addGap(50, 50, 50)
+                .addGap(32, 32, 32)
                 .addComponent(jButton3)
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addGap(34, 34, 34))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -61,8 +66,8 @@ public class frmMenuFactura extends javax.swing.JFrame {
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGenerar)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3)
+                    .addComponent(jButton2))
                 .addContainerGap(242, Short.MAX_VALUE))
         );
 
@@ -73,6 +78,10 @@ public class frmMenuFactura extends javax.swing.JFrame {
       frmFactura factura = new frmFactura();
       factura.setVisible(true);
     }//GEN-LAST:event_btnGenerarActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
 
    
     public static void main(String args[]) {
